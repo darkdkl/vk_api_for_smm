@@ -4,6 +4,7 @@ from datetime import datetime, timedelta
 import plotly
 import settings
 
+
 def search_posts(search_string, start='', end=''):
 
     params = {'q': search_string,
@@ -47,10 +48,12 @@ def main(search_string, interval):
         start_data = datetime.today()-timedelta(days=day)
 
         number_of_posts = search_posts(search_string, int(
-            start_data.timestamp()), int(datetime.today().timestamp()))
+            start_data.timestamp()), int((start_data+timedelta(days=1)).timestamp()))
+
         date_and_posts = start_data.date().isoformat(), number_of_posts
         info_posts.append(date_and_posts)
         time.sleep(3)
+
     return build_plot(info_posts, search_string)
 
 
