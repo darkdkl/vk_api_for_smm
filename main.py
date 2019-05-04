@@ -23,16 +23,13 @@ def search_posts(search_string, start='', end=''):
 
 
 def build_plot(info_posts, name):
-
+    
     plotly.tools.set_credentials_file(
         username=settings.PLOTLY_USERNAME, api_key=settings.PLOTLY_TOKEN)
-    posts = []
-    for post in info_posts:
-        posts.append(post[1])
-    date_posts = []
-    for day in info_posts:
-        date_posts.append(day[0])
-
+    posts = [post[1] for post in info_posts]
+    
+    date_posts = [day[0] for day in info_posts]
+   
     data = [plotly.graph_objs.Bar(
             x=date_posts,
             y=posts
@@ -41,21 +38,22 @@ def build_plot(info_posts, name):
     return plotly.plotly.plot(data, filename=name, auto_open=False)
 
 
-def main(search_string, interval):
+def main():
+
     info_posts = []
+    today=datetime.today()
+    for day in range(0, settings.SEARCH_INTERVAL):
+        start_date = today-timedelta(days=day)
 
-    for day in range(0, interval):
-        start_data = datetime.today()-timedelta(days=day)
+        number_of_posts = search_posts(settings.SEARCH_NAME, int(
+            start_date.timestamp()), int((start_date+timedelta(days=1)).timestamp()))
 
-        number_of_posts = search_posts(search_string, int(
-            start_data.timestamp()), int((start_data+timedelta(days=1)).timestamp()))
-
-        date_and_posts = start_data.date().isoformat(), number_of_posts
+        date_and_posts = start_date.date().isoformat(), number_of_posts
         info_posts.append(date_and_posts)
         time.sleep(3)
 
-    return build_plot(info_posts, search_string)
+    return build_plot(info_posts, settings.SEARCH_NAME)
 
 
 if __name__ == "__main__":
-    print(main(settings.SEARCH_NAME, settings.SEARCH_INTERVAL))
+    print(main())
