@@ -42,7 +42,7 @@ def main():
 
     info_posts = []
     today=datetime.today()
-    for day in range(0, settings.SEARCH_INTERVAL):
+    for day in range(settings.SEARCH_INTERVAL):
         start_date = today-timedelta(days=day)
 
         number_of_posts = search_posts(settings.SEARCH_NAME, int(
